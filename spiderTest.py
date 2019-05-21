@@ -83,8 +83,8 @@ try:
         data = urlencode(params).encode('utf-8')
         html = urlopen("http://www.oscca.gov.cn/app-zxfw/cpxx/symmcp2.jsp", data)
         bsobj = BeautifulSoup(html.read(), features='html.parser')
+        print("Get Page " + str(curentpage) + "finished")
         getDataFromPage(bsobj, dataSet)
-
         curentpage = curentpage + 1
         time.sleep(3)
 
