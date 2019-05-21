@@ -2,6 +2,7 @@ from urllib.request import urlopen
 from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 import time
+import json
 
 
 def getDataFromPage(bsobj, dataSet):
@@ -33,8 +34,6 @@ def getDataFromPage(bsobj, dataSet):
         #         recData = {}
         #     i = i + 1
 
-
-
     except AttributeError as e:
         print(e)
 
@@ -49,6 +48,13 @@ def getNexPage(bsobj):
             return url
     return url
 
+
+def saveData(fileName, dataSet):
+    file = open(fileName, mode="w")
+    for data in dataSet:
+        jsonData = json.dumps(data, ensure_ascii=False)
+        file.write(jsonData + "\n")
+    file.close()
 
 def getParam(bsobj, id):
     try:
@@ -74,6 +80,8 @@ try:
     datacount = getParam(bsobj, "datacount")
     params["datacount"] = datacount
 
+    fileName = "./data.txt"
+    # saveData(fileName, dataSet)
     # 寻找下一页
     curentpage = 2
 
@@ -88,7 +96,7 @@ try:
         curentpage = curentpage + 1
         time.sleep(3)
 
-    for data in dataSet:
-        print(data)
+    saveData(fileName, dataSet)
+
 except Exception as e:
     print(e)
