@@ -60,7 +60,7 @@ def getParam(bsobj, id):
 
 try:
     html = urlopen("http://www.oscca.gov.cn/app-zxfw/cpxx/symmcp2.jsp")
-    bsobj = BeautifulSoup(html.read())
+    bsobj = BeautifulSoup(html.read(), features='html.parser')
     dataSet = []
     getDataFromPage(bsobj, dataSet)
     # 初始化查询参数
@@ -82,7 +82,7 @@ try:
         params["curentpage"] = curentpage
         data = urlencode(params).encode('utf-8')
         html = urlopen("http://www.oscca.gov.cn/app-zxfw/cpxx/symmcp2.jsp", data)
-        bsobj = BeautifulSoup(html.read())
+        bsobj = BeautifulSoup(html.read(), features='html.parser')
         getDataFromPage(bsobj, dataSet)
 
         curentpage = curentpage + 1
