@@ -1,5 +1,7 @@
 from urllib.request import urlopen
+from urllib.parse import urlencode
 from bs4 import BeautifulSoup
+import time
 
 
 def getDataFromPage(bsobj, dataSet):
@@ -48,12 +50,45 @@ def getNexPage(bsobj):
     return url
 
 
-html = urlopen("http://www.oscca.gov.cn/app-zxfw/cpxx/symmcp2.jsp")
-bsobj = BeautifulSoup(html.read())
-dataSet = []
-getDataFromPage(bsobj, dataSet)
-# 寻找下一页
-url = getNexPage(bsobj)
-print(url)
-for data in dataSet:
-    print(data)
+def getParam(bsobj, id):
+    try:
+        t = bsobj.find("input", {"id": id})
+        return t.attrs["value"]
+    except Exception as e:
+        return ""
+
+
+try:
+    html = urlopen("http://www.oscca.gov.cn/app-zxfw/cpxx/symmcp2.jsp")
+    bsobj = BeautifulSoup(html.read())
+    dataSet = []
+    getDataFromPage(bsobj, dataSet)
+    # 初始化查询参数
+    params = {"manuscript_id": "", "curentpage": "", "pagecount": "", "datacount": "", "cpxh": "", "cpmc": "",
+              "yzdw": "",
+              "xhzsbh": "",
+              "starttime": "", "endtime": ""}
+    pagecount = getParam(bsobj, "pagecount")
+    params["pagecount"] = pagecount
+
+    datacount = getParam(bsobj, "datacount")
+    params["datacount"] = datacount
+
+    # 寻找下一页
+    curentpage = 2
+
+    while (curentpage <= int(pagecount)):
+        print("Get Page " + str(curentpage))
+        params["curentpage"] = curentpage
+        data = urlencode(params).encode('utf-8')
+        html = urlopen("http://www.oscca.gov.cn/app-zxfw/cpxx/symmcp2.jsp", data)
+        bsobj = BeautifulSoup(html.read())
+        getDataFromPage(bsobj, dataSet)
+
+        curentpage = curentpage + 1
+        time.sleep(3)
+
+    for data in dataSet:
+        print(data)
+except Exception as e:
+    print(e)
