@@ -54,5 +54,6 @@ dataSet = []
 getDataFromPage(bsobj, dataSet)
 # 寻找下一页
 url = getNexPage(bsobj)
+print(url)
 for data in dataSet:
     print(data)
